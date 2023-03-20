@@ -7,7 +7,7 @@ import ListView from "src/core/components/list"
 const Home: BlitzPage = () => {
   return (
     <MainLayout title="Home">
-      <ListView />
+      <ListView API_URI={"https://fakerapi.it/api/v1"} />
     </MainLayout>
   )
 }
