@@ -1,27 +1,32 @@
-import { Container, Card, Row, Table, Col, Tooltip, useAsyncList } from "@nextui-org/react"
+import { Container, Card, Row, Table, Col, Tooltip, Modal, Text } from "@nextui-org/react"
 import { FC, useState, useEffect } from "react"
 import { IconButton } from "./utils/IconButton"
 import { BiAddToQueue } from "react-icons/bi"
 import { RiDeleteBin2Line } from "react-icons/ri"
+import { Person } from "../data/person"
+import { Book } from "../data/book"
+import { ListItem } from "../data/list-item"
+import AddDialog from "./addDialog"
 
 const loadPersons = async (API_URI: string) => {
   const uri = `${API_URI}/persons`
   const res = await fetch(uri)
-  const data = (await res.json()).data
+  const data = (await res.json()).data as Person[]
   return data
 }
 const loadBooks = async (API_URI: string) => {
   const uri = `${API_URI}/books`
   const res = await fetch(uri)
-  const data = (await res.json()).data
+  const data = (await res.json()).data as Book[]
   return data
 }
 const ListView: FC<{
   API_URI: string
 }> = ({ API_URI }) => {
-  const [list, setList] = useState([])
-  const [persons, setPersons] = useState([])
-  const [books, setBooks] = useState([])
+  const [list] = useState<ListItem[]>([])
+  const [persons, setPersons] = useState<Person[]>([])
+  const [books, setBooks] = useState<Book[]>([])
+  const [showAddDialog, setShowAddDialog] = useState(false)
   useEffect(() => {
     const load = async () => {
       if (persons.length === 0 || books.length === 0) {
@@ -82,6 +87,17 @@ const ListView: FC<{
           </Row>
         </Card.Body>
       </Card>
+
+      <Modal closeButton aria-labelledby="modal-title" open={showAddDialog}>
+        <Modal.Header>
+          <Text id="modal-title" size={18}>
+            Add New item to List
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+          <AddDialog persons={persons} books={books} />
+        </Modal.Body>
+      </Modal>
     </Container>
   )
 }
